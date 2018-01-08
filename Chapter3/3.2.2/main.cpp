@@ -19,4 +19,4 @@ class ListItem{
   private:
     T _value;
     ListItem *_next;
-}
+};
