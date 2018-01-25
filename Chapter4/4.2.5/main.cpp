@@ -6,7 +6,7 @@
 using namespace std;
 
 int main(){
-    
+
     int i;
     vector<int> iv(2,9);
     cout<<"size="<<iv.size()<<endl; //size=2
@@ -57,13 +57,13 @@ int main(){
         cout<<iv[i]<<' '; //9 9 2
     cout<<endl;
 
-    ivite=find(ivec.begin(),iv.end(),2);
+    ivite=find(iv.begin(),iv.end(),2);
     if(ivite!=iv.end())iv.insert(ivite,3,7);
 
     cout<<"size="<<iv.size()<<endl; //size=6
     cout<<"capacity="<<iv.capacity()<<endl; //capacity=8
-    for(int i=0;i<ivec.size();++i) //9 9 7 7 7 2
-        cout<<ivec[i]<<' ';
+    for(int i=0;i<iv.size();++i) //9 9 7 7 7 2
+        cout<<iv[i]<<' ';
     cout<<endl;
 
     iv.clear();
