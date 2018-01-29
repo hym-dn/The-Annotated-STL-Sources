@@ -65,3 +65,73 @@ void list<T,Alloc>::unique(){
         next=first; //修正区段范围
     }
 }
+
+// 将[first,last)内的所有元素移动到position之前
+void transfer(iterator position,iterator first,iterator last){
+    if(position!=last){// 插入位置便是当前位置
+        (*(link_type((*last.node).prev))).next=position.node;
+        (*(link_type((*first.node).prev))).next=last.node;
+        (*(link_type((*position.node).prev))).next=first.node;
+        link_type tmp=link_type((*position.node).prev);
+        (*position.node).prev=(*last.node).prev;
+        (*last.node).prev=(*first.node).prev;
+        (*first.node).prev=tmp;
+    }
+}
+
+// 将x接合于position所指位置之前，x必须不同于*this
+void splice(iterator position,list &x){
+    if(!x.empty())
+        transfer(position,x.begin(),x.end());
+}
+
+// 将 i 所指元素接合于position所指位置之前，position和i可指向同一个list
+void splice(iterator position,list &,iterator i){
+    iterator j=i;
+    ++j;
+    if(position==i||position==j) return;
+    transfer(position,i,j);
+}
+
+// 将[first,last)内的所有元素接合于position所指位置之前
+// position和[first,last)可指向同一个list,
+// 但position不能位于[first,last)之内
+void splice(iterator position,list &,iterator first,iterator last){
+    if(first!=last)
+        transfer(position,first,last);
+}
+
+// merge()将x合并到*this身上，两个lists的内容都必须先经过递增排序
+template<class T,class Alloc>
+void list<T,Alloc>::merge(list<T,Alloc> &x){
+    iterator first1=begin();
+    iterator last1=end();
+    iterator first2=x.begin();
+    iterator last2=x.end();
+    //注意：前提是，两个lists都已经过递增排序
+    while(first1!=last1&&first2!=last2)
+        if(*first2<*first1){
+            iterator next=first2;
+            transfer(first1,first2,++next);
+            first2=next;
+        }else{
+            ++first1;
+        }
+    if(first2!=last2) transfer(last1,first2,last2);
+}
+
+// reverse()将*this的内容逆向重置
+template<class T,class Alloc>
+void list<T,Alloc>::reverse(){
+    // 以下判断，如果是空链表，或仅有一个元素，就不进行任何操作
+    // 使用size()==0||size()==1来判断，虽然也可以，但是比较慢
+    if(node->next==node||link_type(node->next)->next==node)
+        return;
+    iterator first=begin();
+    while(first!=end()){
+        iterator old=first;
+        ++first;
+        transfer(begin(),old,first);
+    }
+}
+
