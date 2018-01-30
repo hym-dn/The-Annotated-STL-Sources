@@ -135,3 +135,47 @@ void list<T,Alloc>::reverse(){
     }
 }
 
+
+// list不能使用STL算法sort()，必须使用自己的sort()member function，
+// 因为STL算法sort()只接受RamdonAccessIterator
+// 本函数采用quick sort
+/*
+总体上来说，算法的思想就是准备64个槽(counter[i])，编号为0,1,...,63,
+分别表示已经排序长为1,2,...,2的链表．一开始这64个槽为空.
+1.如果待排序链表还有未被取出的元素则取出下一个元素，否则转到3
+2.将这个元素先和0号槽合并，如果此时0号槽为空则，将合并后结果放入0号槽;
+  如果不为空那么合并后长度变为2,则清空0号槽，继续和1号槽合并，依次类推
+  一直合并到i号槽，且i号槽为空，则将合并结果放入i号槽．转到1.
+3.将这64个槽从低到高依次合并，得到最终的结果.
+*/
+template<class T,class Alloc>
+void list<T,Alloc>::sort(){
+    // 以下判断，如果是空链表，或仅有一个元素，就不进行任何操作
+    // 使用size()==0||size()==1来判断，虽然也可以，但是比较慢
+    if(node->next==node||link_type(node->next)->next==node){
+        return;
+    }
+    //一些新的lists，作为中介数据存放区
+    list<T,Alloc> carry;
+    list<T,Alloc> counter[64]; //64个槽
+    int fill=0;
+    while(!empty()){//当前链表非空
+        //将当前列表中begin()位置上的元素插入到carry链表begin()位置之前。
+        carry.splice(carry.begin(),*this,begin());
+        int i=0;
+        while(i<fill&&!counter[i].empty()){
+            //合并链表
+            counter[i].merge(carry);//中间有排序的过程，排序合并
+            //交换链表
+            carry.swap(counter[i++]);
+        }
+        //carry链表内容和counter[i]交换
+        carry.swap(counter[i++]);
+        if(i==fill) ++fill;
+    }
+    //将槽进行合并
+    for(int i=1;i<fill;++i)
+        counter[i].merge(counter[i-1]);
+    //获取排序后的列表
+    swap(counter[fill-1]);
+}
