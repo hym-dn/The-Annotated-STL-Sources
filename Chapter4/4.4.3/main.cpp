@@ -122,8 +122,6 @@ struct __deque_iterator{ // 未继承 std::iterator
         return(node==x.node)?(cur<x.cur):(node<x.node);
     }
 
-    
-
 };
 
 // 如果n不为0，传回n，表示buffer size由用户自定义
