@@ -1,4 +1,4 @@
-protected: // Internal typedefs
+protected: // Internal typedef
 
     // 专属之空间配置器，每次配置一个元素大小
     typedef simple_alloc<value_type,Alloc> data_allocator;
@@ -143,7 +143,7 @@ public:
             // 符合以上条件则必须重换一个map(配置更大的，拷贝原来的，释放原来的)
             reallocate_map(nodes_to_add,true);
     }
-
+    
     template<class T,class Alloc,size_t BufSize>
     void deque<T,Alloc,BufSize>::reallocate_map(
         size_type nodes_to_add,bool add_at_front){
@@ -179,5 +179,5 @@ public:
         // 重新设定迭代器start和finish
         start.set_node(new_nstart);
         finish.set_node(new_nstart+old_num_nodes-1);
-        
+
     }
