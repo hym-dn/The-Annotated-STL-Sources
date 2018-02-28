@@ -1,6 +1,6 @@
 template<class RandomAccessIterator>
 inline void push_heap(RandomAccessIterator first,RandomAccessIterator last){
-    // 注意，此函数被调用时，新元素应已置于第五容器的最尾端
+    // 注意，此函数被调用时，新元素应已置于底部容器的最尾端
     __push_head_aux(first,last,distance_type(first),value_type(first));
 }
 
@@ -12,6 +12,7 @@ inline void __push_heap_aux(RandomAccessIterator first,RandomAccessIterator last
 }
 
 // 以下这组 push_back() 不允许指定“大小比较标准”
+// 上溯
 template<class RandomAccessIterator first,class Distance,class T>
 void __push_heap(RandomAccessIterator first,Distance holeIndex,
     Distance topIndex,T value){
@@ -77,6 +78,8 @@ void __adjust_heap(RandomAccessIterator first,Distance holeIndex,Distance len,T 
     // 此时（可能）尚未满足次序特性，执行一次percolate up操作
     // 读者回应： 不可如此，是套4.7.4节范例即知。侯捷测试：验证后的确不行。
     __push_heap(first,holeIndex,topIndex,value);
+    // 最后一次上溯，是因为前面下滤过程中，并没有考虑记录值的大小，而算法导论
+    // 的堆算法中直接将记录值于根交换，而后下滤，这样便省去了最后一步上溯过程。
 }
 
 // 以下这个 sort_heap() 不允许指定 “大小比较标准”
